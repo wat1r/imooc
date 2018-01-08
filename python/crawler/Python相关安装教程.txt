@@ -1,0 +1,22 @@
+安装scrapy教程：
+
+1.安装python3.5
+2.安装pip
+3.安装Pywin32
+https://sourceforge.net/projects/pywin32/files/pywin32/
+下载的Build220下的：pywin32-220.win-amd64-py3.5.exe
+4.下载安装lxml-3.7.3-cp35-cp35m-win_amd64.wh1
+https://pypi.python.org/pypi/lxml/3.7.3
+cmd下执行：pip install lxml-3.7.3-cp35-cp35m-win_amd64.whl
+5.安装scrapy：
+cmd下执行：pip install scrapy
+6.安装成功检查：
+ cmd下执行：scrapy version
+
+备注：
+A：下载的包文件
+https://www.lfd.uci.edu/~gohlke/pythonlibs/
+B:安装参考教程：
+http://www.cnblogs.com/liuliliuli2017/p/6746440.html
+C:火狐浏览器版本匹配Firebug插件：
+https://archive.mozilla.org/pub/firefox/releases/39.0b2/win64/zh-CN/ 
