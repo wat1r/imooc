@@ -2,6 +2,8 @@ package com.alogrithm.maze;
 
 import java.util.*;
 
+import com.google.gson.Gson;
+
 public class Maze {
 
 	private int[][] maze = null;
@@ -54,7 +56,7 @@ public class Maze {
 		int i = 1;
 		int j = 1;
 		p[i][j] = true;
-		stack.push(new Position(i, j));
+		stack.push(new Position(i, j));// debug调试的时候，鼠标上移到stack上时，实际是走了toString方法的
 		// 这里是是将走到的点入栈，然后如果前后左右都走不通的话才出栈
 		while (!stack.empty() && !end(i, j)) {
 			// 下面就开始在四周试探，如果有路就向前走，顺序分别是右，下，上，左，当然这是随便定义的，不过一般都是现向下和右的
@@ -74,10 +76,11 @@ public class Maze {
 				p[i - 1][j] = true;
 				stack.push(new Position(i - 1, j));
 				i--;
-			} else {// 前后左右都不能走
+			} else {// 前后左右都不能走 如果已经走过的点 p被置为true，表示这个点也不能走，继续回溯
 				System.out.println(i + "---------" + j);
 				stack.pop();// 这个点不能走通，弹出
 				if (stack.empty()) {// 如果此栈中已经没有点了，那么直接跳出循环
+									// 发现没有点可以走，一步不回溯，stack为空，表示回到了起点位置
 					System.out.println("没有路径了，出不去了");
 					return; // 直接退出了，下面就不用找了
 				}
@@ -87,6 +90,7 @@ public class Maze {
 
 			// 如果已经到达了边界，那么直接可以出去了，不需要继续向前走了，这里是规定边界的任意为0的位置都是出口
 			// 如果不加这个判断的话，那么当到达边界的时候，只有走到不能再走的时候才会输出路线，那种线路相对这个而言是比较长的
+			// 只要是遇到右边的那堵墙，就开始重新打印走过的路径
 			if (j == temp[0].length - 2) { // 如果已经到达边界了，那么当前的位置就是出口，就不需要再走了
 				Stack<Position> pos = new Stack<Position>();
 				System.out.println("路径如下：");
@@ -104,7 +108,7 @@ public class Maze {
 
 	public static void main(String[] args) {
 		int[][] maze = { { 0, 1, 0, 0, 0 }, { 0, 1, 0, 1, 0 },
-				{ 0, 0, 0, 0, 0 }, { 0, 1, 1, 1, 0 }, { 0, 0, 0, 1, 0 } };
+				{ 0, 0, 1, 0, 0 }, { 0, 1, 1, 1, 0 }, { 0, 0, 0, 1, 0 } };
 		Maze main = new Maze(maze);
 		main.findPath();
 
@@ -117,7 +121,8 @@ class Position {
 	public int row;
 
 	public Position() {
-
+		row = 0;
+		col = 0;
 	}
 
 	public Position(int row, int col) {
