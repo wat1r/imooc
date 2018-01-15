@@ -1,4 +1,4 @@
-package com.company;
+package zuoshen.company;
 
 import java.util.*;
 
@@ -13,6 +13,39 @@ public class Company18 {
 	}
 
 	/**
+	 * * 2018网易内推编程题：独立的小易 5/8
+	 ****** 
+	 * 思路： 房租每天x元，初始金钱是d元，这些钱全部用来付房租，则可以付day=d/x天的房租，如果一开始带的水果数f大于等于day，
+	 * 说明不用为水果发愁，此时最大住的天数dayMax=day。（钱全部用来付房租）
+	 * 
+	 * 如过f<day,则钱不仅要用来付房租，还可能要用来买水果。 事实上小易每天的花费为一个水果价钱加上房租 即 cost=p+x;
+	 * 取巧的思路是，我们将一开始带的水果全部看成钱
+	 * ,则此时相当于小易一开始带的钱数为money=d+f*p。然后除以每天的花费，就可以得到最大住的天数。 即dayMax=money/cost ;
+	 * 
+	 * @return小易可以独立生活的天数
+	 */
+	public long independentXiaoYi() {
+		System.out.println("Input:");
+		Scanner sc = new Scanner(System.in);
+
+		long x = sc.nextLong();// 每日的房租 x元
+		long f = sc.nextLong();// 水果的个数 f个
+		long d = sc.nextLong();// 拥有的钱数 d元
+		long p = sc.nextLong();// 每个水果的价格 p元
+		long day = d / x;
+		if (f >= day) {
+			return day;
+		}
+		long money = d + f * p;
+		long cost = x + p;
+		return money / cost;
+
+	}
+
+	/**
+	 * 
+	 * 2018网易内推编程题：操作序列 4/8
+	 ****** 
 	 * * 思路: 序列a:0 1 2 3 4 5 6 7 8 9 长度为10 序列b的变化过程: ****** 一、 0
 	 ****** 
 	 * 二、 1 0
