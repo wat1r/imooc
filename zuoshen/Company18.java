@@ -11,27 +11,65 @@ public class Company18 {
 		// cb.countScanner();
 		// cb.staggered01Scanner();
 		// cb.operationSequence();
+		cb.crazySequence();
 
 	}
 
 	/**
-	 * * * 2018网易内推编程题：独立的小易 7/8
+	 * 2018网易内推编程题：独立的小易 7/8 
+	 *************
+	 */
+	public void crazySequence() {
+		Scanner in = new Scanner(System.in);
+
+		// while (in.hasNext()) {
+		// int n = in.nextInt();
+		int n = 8;
+		// int[] nums = new int[n];
+		int[] nums = { 7, 11, 17, 13, 2, 3, 5, 19 };
+		// for (int i = 0; i < n; i++) {
+		// nums[i] = in.nextInt();
+		// }
+		TotalSort.sortSmallToBig(nums, 0, n - 1);
+		int min = nums[0];// 上一次加入疯狂队列的那个最小值
+		int max = nums[n - 1];// 上一次加入疯狂队列的那个最大值
+		int diff = max - min;// 第一次最大值减去最小值
+		int minIndex = 1; // 未加入疯狂队列的最小值索引
+		int maxIndex = n - 2; // 未加入疯狂队列的最大值索引
+		while (minIndex < maxIndex) {
+			diff += max - nums[minIndex];
+			diff += nums[maxIndex] - min;
+			min = nums[minIndex++];
+			max = nums[maxIndex--];
+		}
+		// 原数列中最后一个数 minIndex == maxIndex，将它放到合适的位置上
+		diff += Math.max(nums[maxIndex] - min, max - nums[minIndex]);
+		System.out.println(diff);
+
+		// }
+
+	}
+
+	/**
+	 * * * 2018网易内推编程题：独立的小易 7/8 参考C写的，运行不出来
 	 ****** 
 	 * 具体解析过程： http://blog.csdn.net/he_shuai20/article/details/77200568
 	 * 
 	 */
-	public void crazySequence() {
-		System.out.println("Input:");
-		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
+	public void crazySequence1() {
+		// System.out.println("Input:");
+		// Scanner sc = new Scanner(System.in);
+		// int n = sc.nextInt();
+		int n = 8;
 		Vector<Integer> v1 = new Vector<>();
-		int[] arr = new int[n];
+		// int[] arr = new int[n];
+		int[] arr = { 7, 11, 17, 13, 2, 3, 5, 19 };
 		for (int i = 0; i < n; i++) {
-			arr[i] = sc.nextInt();
+			// arr[i] = sc.nextInt();
 			v1.add(arr[i]);
 		}
 
-		TotalSort.sortSmallToBig(arr, 0, n);
+		TotalSort.sortSmallToBig(arr, 0, n - 1);
 
 		Vector<Integer> v2 = new Vector<>();
 
