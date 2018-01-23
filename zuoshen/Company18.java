@@ -2,14 +2,70 @@ package zuoshen.company;
 
 import java.util.*;
 
+import com.sort.TotalSort;
+
 public class Company18 {
 
 	public static void main(String[] args) {
 		Company18 cb = new Company18();
 		// cb.countScanner();
 		// cb.staggered01Scanner();
-		cb.operationSequence();
+		// cb.operationSequence();
 
+	}
+
+	/**
+	 * * * 2018网易内推编程题：独立的小易 7/8
+	 ****** 
+	 * 具体解析过程： http://blog.csdn.net/he_shuai20/article/details/77200568
+	 * 
+	 */
+	public void crazySequence() {
+		System.out.println("Input:");
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		Vector<Integer> v1 = new Vector<>();
+		int[] arr = new int[n];
+		for (int i = 0; i < n; i++) {
+			arr[i] = sc.nextInt();
+			v1.add(arr[i]);
+		}
+
+		TotalSort.sortSmallToBig(arr, 0, n);
+
+		Vector<Integer> v2 = new Vector<>();
+
+		int flag = 1;
+		int left = -1;
+		int right = n - 1;
+
+		v2.add(v1.get(n - 1));
+
+		while (left + 1 < right) {
+			if (flag == 1) {
+				v2.add(v2.firstElement(), v1.get(++left));
+				if (left + 1 < right) {
+					v2.add(v1.get(++left));
+				}
+			} else {
+				v2.add(v2.firstElement(), v1.get(--right));
+				if (left + 1 < right) {
+					v2.add(v1.get(--right));
+				}
+			}
+			flag ^= 1;// 保证一左一右
+		}
+		if (Math.abs(v2.get(n - 1) - v2.get(n - 2)) < Math.abs(v2.get(n - 1)
+				- v2.get(0))) {
+			int temp = v2.get(n - 1);
+			v2.remove(v2.lastElement() - 1);
+			v2.add(v2.firstElement(), temp);
+		}
+		int count = 0;
+		for (int i = 1; i < v2.size(); i++) {
+			count += Math.abs(v2.get(i) - v2.get(i - 1));
+		}
+		System.out.println("count:" + count);
 	}
 
 	/**
