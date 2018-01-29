@@ -7,15 +7,104 @@ public class ChapterFour {
 	public static void main(String[] args) {
 		ChapterFour cf = new ChapterFour();
 
-		int[][] m = { { 1, 3, 5, 9, 1 }, { 8, 1, 3, 4, 2 }, { 5, 0, 6, 1, 3 },
-				{ 8, 8, 4, 0, 4 } };
+		// int[][] m = { { 1, 3, 5, 9, 1 }, { 8, 1, 3, 4, 2 }, { 5, 0, 6, 1, 3
+		// },
+		// { 8, 8, 4, 0, 4 } };
+		//
+		// // cf.minPathSum1(m);
+		// cf.minPathSum2(m);
 
-		// cf.minPathSum1(m);
-		cf.minPathSum2(m);
+		// int[] arr = { 3, 2, 3, 1, 1, 4 };
+		// cf.jump(arr);
+
+		// int[][] m = { { -2, -3, 3 }, { -5, -10, 1 }, { 0, 30, -5 } };
+		//
+		// cf.minHP1(m);
 	}
 
 	/**
-	 * ¾ØÕóµÄ×îĞ¡Â·¾¶ºÍ P187
+	 * æ¢é’±çš„æ–¹æ³• P196 ç¬¬ä¸€ç§æ–¹æ³•ï¼šæš´åŠ›ç®—æ³•
+	 * 
+	 * @param arr
+	 * @param aim
+	 * @return
+	 */
+	public int coins1(int[] arr, int aim) {
+
+		if (arr == null || arr.length == 0 || aim < 0) {
+			return 0;
+		}
+
+		return process1(arr, 0, aim);
+	}
+
+	private int process1(int[] arr, int index, int aim) {
+		int res = 0;
+		if (index == arr.length) {
+			res = aim == 0 ? 1 : 0;
+		} else {
+			for (int i = 0; arr[index] * i <= aim; i++) {// æ¯æ¬¡é¡¶ä¸€ä¸ªarr[index]éœ€è¦çš„è¯ï¼Œä¸€æ­¥æ­¥çš„++ä¸Šå»
+				res += process1(arr, index + 1, aim - arr[index] * i);
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * P223 é¾™ä¸åœ°ä¸‹åŸæ¸¸æˆé—®é¢˜
+	 * 
+	 * @param m
+	 * @return
+	 */
+	public int minHP1(int[][] m) {
+		if (m == null || m.length == 0 || m[0] == null || m[0].length == 0) {
+			return 1;
+		}
+
+		int row = m.length;
+		int col = m[0].length;
+		int[][] dp = new int[row--][col--];// åšæˆä¸€ä¸ªï¼ˆrowï¼‰*ï¼ˆcolï¼‰çš„æ•°ç»„ row coléƒ½--
+		dp[row][col] = m[row][col] > 0 ? 1 : -m[row][col] + 1;// åˆ¤æ–­æœ€åä¸€ä¸ªå³ä¸‹è§’çš„æ•°ç»„çš„å€¼ï¼Œç¡®å®šæœ€å³ä¸‹è§’çš„å€¼ï¼ˆç›®æ ‡è¡€é‡ï¼‰ï¼Œè¦æ˜¯æ­£æ•°çš„è¯ï¼Œåªéœ€è¦dpåœ¨æ­¤ä½ç½®ä¸º1å³å¯ï¼Œè´Ÿæ•°çš„è¯ï¼Œéœ€è¦+1
+
+		for (int j = col - 1; j >= 0; j--) {// å°†ï¼ˆrow-1ï¼‰è¡Œé…ç½®å¥½ï¼Œä¹Ÿå°±æ‰€è°“çš„æœ€ä¸‹é¢çš„å¢™
+			dp[row][j] = Math.max(dp[row][j + 1] - m[row][j], 1);
+		}
+		int right = 0;
+		int down = 0;
+
+		for (int i = row - 1; i >= 0; i--) {// å¼€å§‹éå†rowï¼ˆè¡Œï¼‰ï¼Œä¸€æ­¥æ­¥å…ˆå°†ï¼ˆcol-1ï¼‰çš„å¢™è¡¥ä¸Šï¼Œ
+			dp[i][col] = Math.max(dp[i + 1][col] - m[i][col], 1);
+			for (int j = col - 1; j >= 0; j--) {// åµŒå¥—åœ¨è¡Œé€’å‡çš„å¾ªç¯å†…ï¼Œå°†è¿™ä¸€è¡Œçš„å·¦è¾¹ä½ç½®ä¸€ä¸ªä¸ªè¡¥é½
+				right = Math.max(dp[i][j + 1] - m[i][j], 1);
+				down = Math.max(dp[i + 1][j] - m[i][j], 1);
+				dp[i][j] = Math.min(right, down);// å“ªä¸ªæœ€å°é€‰ç”¨å“ªä¸€ä¸ª
+			}
+		}
+
+		return dp[0][0];// è¿”å›å¼€å§‹çš„çš„åŠ¨æ€æ•°ç»„çš„dp[0][0]
+	}
+
+	public int jump(int[] arr) {
+		if (arr == null || arr.length == 0) {
+			return 0;
+		}
+
+		int jump = 0;// Ä¿Ç°ï¿½ï¿½ï¿½Ë¶ï¿½ï¿½Ù²ï¿½
+		int cur = 0;// ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½jumpï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½Ü¹ï¿½ï¿½ïµ½ï¿½ï¿½Î»ï¿½ï¿½
+		int next = 0;// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½Ü¹ï¿½ï¿½ïµ½ï¿½ï¿½Î»ï¿½ï¿½
+		for (int i = 0; i < arr.length; i++) {
+			if (cur < i) {
+				jump++;
+				cur = next;
+			}
+			next = Math.max(next, i + arr[i]);
+		}
+
+		return jump;
+	}
+
+	/**
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¡Â·ï¿½ï¿½ï¿½ï¿½ P187
 	 * 
 	 * @param m
 	 * @return
@@ -47,7 +136,7 @@ public class ChapterFour {
 	}
 
 	/**
-	 * ¾ØÕóµÄ×îĞ¡Â·¾¶ºÍ P187 ¿Õ¼äÑ¹ËõºóµÄµÚ¶şÖÖ½â·¨
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¡Â·ï¿½ï¿½ï¿½ï¿½ P187 ï¿½Õ¼ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ÄµÚ¶ï¿½ï¿½Ö½â·¨
 	 * 
 	 * @param m
 	 * @return
@@ -56,17 +145,17 @@ public class ChapterFour {
 		if (m == null || m.length == 0 || m[0] == null || m[0].length == 0) {
 			return 0;
 		}
-		int more = Math.max(m.length, m[0].length);// ĞĞÊıºÍÁĞÊı½Ï´óµÄÄÇ¸öÎªmore
-		int less = Math.min(m.length, m[0].length);// ĞĞÊıºÍÁĞÊı½ÏĞ¡µÄÄÇ¸öÎªless
-		boolean rowmore = (more == m.length);// m.length´ú±íĞĞÊı£¬ÅĞ¶ÏĞĞÊıºÍÁĞÊıÊÇ·ñÏàµÈ£¬ÏàµÈ·µ»Øtrue£¬²»ÏàµÈ·µ»Øfalse
-		int[] arr = new int[less];// ¸¨ÖúÊı×éµÄ³¤¶È½öÎªĞĞÊıÓëÁĞÊıÖĞµÄ×îĞ¡Öµ
+		int more = Math.max(m.length, m[0].length);// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½Ç¸ï¿½Îªmore
+		int less = Math.min(m.length, m[0].length);// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½Ç¸ï¿½Îªless
+		boolean rowmore = (more == m.length);// m.lengthï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½trueï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½false
+		int[] arr = new int[less];// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½È½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğµï¿½ï¿½ï¿½Ğ¡Öµ
 		arr[0] = m[0][0];
-		//×¢ÒâÏÂĞĞÊıºÍÁĞÊı²»µÈÊ±µÄÑ¡È¡[j][i]  [i][j]
-		for (int i = 1; i < less; i++) {// ¼ÙÈçÊÇ4ĞĞ5ÁĞ£¬arr²úÉúµÄÊÇÊú×ÅµÄÒ»ÁĞ£¬´Ó×óÓÒ±ßÍÆ½ø
-			arr[i] = arr[i - 1] + (rowmore ? m[0][i] : m[i][0]);// tureÊ±£¬×ßĞĞÍÆ½ø£¬falseÊ±×ßÁĞÍÆ½ø
+		// ×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ñ¡È¡[j][i] [i][j]
+		for (int i = 1; i < less; i++) {// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½4ï¿½ï¿½5ï¿½Ğ£ï¿½arrï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½Ò»ï¿½Ğ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò±ï¿½ï¿½Æ½ï¿½
+			arr[i] = arr[i - 1] + (rowmore ? m[0][i] : m[i][0]);// tureÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½falseÊ±ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½
 		}
 		for (int i = 1; i < more; i++) {
-			arr[0] = arr[0] + (rowmore ? m[i][0] : m[0][i]);// ÓëÉÏÃæµÄ²úÉúµÚÒ»¸öarrÊ±Ïà·´
+			arr[0] = arr[0] + (rowmore ? m[i][0] : m[0][i]);// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½arrÊ±ï¿½à·´
 			for (int j = 1; j < less; j++) {
 				arr[j] = Math.min(arr[j - 1], arr[j])
 						+ (rowmore ? m[i][j] : m[j][i]);
