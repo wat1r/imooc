@@ -20,6 +20,147 @@ public class ChapterFour {
 		// int[][] m = { { -2, -3, 3 }, { -5, -10, 1 }, { 0, 30, -5 } };
 		//
 		// cf.minHP1(m);
+
+		// int[] arr = { 5, 10, 25, 1 };
+		// int aim = 15;
+		// // cf.coins2(arr, aim);
+		// cf.coins3(arr, aim);
+
+		int[] arr = { 5, 2, 3 };
+		int aim = 20;
+
+	}
+
+	public int minCoins(int[] arr, int aim) {
+		if (arr == null || arr.length == 0 || aim < 0) {
+			return -1;
+		}
+
+		int n = arr.length;
+		int max = Integer.MAX_VALUE;
+		int[][] dp = new int[n][aim + 1];
+
+		for (int j = 1; j <= aim; j++) {
+			dp[0][j] = max;
+			if (j - arr[0] >= 0 && dp[0][j - arr[0]] != max) {
+				dp[0][j] = dp[0][j - arr[0]] + 1;
+			}
+		}
+		int left = 0;
+		for (int i = 1; i < n; i++) {
+			for (int j = 1; j <= aim; j++) {
+				left = max;
+				if (j - arr[i] >= 0 && dp[i][j - arr[i]] != max) {
+					left = dp[i][j - arr[i]] + 1;
+				}
+				dp[i][j] = Math.min(left, dp[i - 1][j]);
+			}
+		}
+
+		return dp[n - 1][aim] != max ? dp[n - 1][aim] : -1;
+	}
+
+	/**
+	 * 换钱的方法 P196 第四种方法：动态规划算法（优化时间复杂度到O(N*aim)）
+	 ********* 
+	 * dp[i][j]表示在使用arr[0,1....i]货币的情况下，组成钱数j有多少中方法
+	 * 
+	 * @param arr
+	 * @param aim
+	 * @return
+	 */
+	public int coins4(int[] arr, int aim) {
+		if (arr == null || arr.length == 0 || aim < 0) {
+			return 0;
+		}
+		int[][] dp = new int[arr.length + 1][aim + 1];
+		for (int i = 0; i < arr.length; i++) {
+			dp[i][0] = 1;
+		}
+		for (int j = 1; j * arr[0] <= aim; j++) {
+			dp[0][j * arr[0]] = 1;
+		}
+
+		for (int i = 1; i < arr.length; i++) {
+			for (int j = 1; j <= aim; j++) {
+				dp[i][j] = dp[i - 1][j];// 与coins3的方法的不同之处，此处没有三层循环
+				dp[i][j] += j - arr[i] >= 0 ? dp[i][j - arr[i]] : 0;
+			}
+		}
+
+		return dp[arr.length - 1][aim];
+	}
+
+	/**
+	 * 换钱的方法 P196 第三种方法：动态规划算法
+	 ********* 
+	 * dp[i][j]表示在使用arr[0,1....i]货币的情况下，组成钱数j有多少中方法
+	 * 
+	 * @param arr
+	 * @param aim
+	 * @return
+	 */
+	public int coins3(int[] arr, int aim) {
+		if (arr == null || arr.length == 0 || aim < 0) {
+			return 0;
+		}
+		int[][] dp = new int[arr.length + 1][aim + 1];
+		for (int i = 0; i < arr.length; i++) {// 做第一列的数据
+			dp[i][0] = 1;
+		}
+
+		for (int j = 1; j * arr[0] <= aim; j++) {// 做第一行的数据
+			dp[0][arr[0] * j] = 1;
+		}
+		int num = 0;
+		for (int i = 1; i < arr.length; i++) {// 做其他的dp[i][j]的数据
+			for (int j = 0; j <= aim; j++) {
+				num = 0;
+				for (int k = 0; j - arr[i] * k >= 0; k++) {
+					num += dp[i - 1][j - arr[i] * k];
+				}
+				dp[i][j] = num;
+			}
+		}
+
+		return dp[arr.length - 1][aim];
+
+	}
+
+	/**
+	 * 换钱的方法 P196 第二种方法：基于暴力算法改进后的记忆搜索算法
+	 * 
+	 * @param arr
+	 * @param aim
+	 * @return
+	 */
+	public int coins2(int[] arr, int aim) {
+
+		if (arr == null || arr.length == 0 || aim < 0) {
+			return 0;
+		}
+
+		int[][] map = new int[arr.length + 1][aim + 1];
+		return process2(arr, 0, aim, map);
+	}
+
+	private int process2(int[] arr, int index, int aim, int[][] map) {
+		int res = 0;
+		if (index == arr.length) {
+			res = aim == 0 ? 1 : 0;
+		} else {
+			int mapValue = 0;
+			for (int i = 0; arr[index] * i <= aim; i++) {
+				mapValue = map[index + 1][aim - arr[index] * i];
+				if (mapValue != 0) {
+					res += mapValue == -1 ? 0 : mapValue;
+				} else {
+					res += process2(arr, index + 1, aim - arr[index] * i, map);// return_res的时候会再次进入这段代码
+				}
+			}
+		}
+		map[index][aim] = res == 0 ? -1 : aim;
+		return res;
 	}
 
 	/**
