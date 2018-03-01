@@ -1,5 +1,8 @@
 package zuoshen.chapter4;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gson.Gson;
 
 public class ChapterFour {
@@ -10,6 +13,8 @@ public class ChapterFour {
 		// int[][] m = { { 1, 3, 5, 9, 1 }, { 8, 1, 3, 4, 2 }, { 5, 0, 6, 1, 3
 		// },
 		// { 8, 8, 4, 0, 4 } };
+		// System.out.println(m.length);
+		// System.out.println(m[0].length);
 		//
 		// // cf.minPathSum1(m);
 		// cf.minPathSum2(m);
@@ -25,10 +30,60 @@ public class ChapterFour {
 		// int aim = 15;
 		// // cf.coins2(arr, aim);
 		// cf.coins3(arr, aim);
+		//
+		// int[] arr = { 5, 2, 3 };
+		// int aim = 20;
 
-		int[] arr = { 5, 2, 3 };
-		int aim = 20;
+		int[] arr = { 100, 4, 200, 1, 3, 2 };
+		cf.longestConsecutive(arr);
 
+	}
+
+	/**
+	 * 数组中的最长连续序列 P236
+	 * 
+	 * @param arr
+	 * @return
+	 */
+	public int longestConsecutive(int[] arr) {
+
+		if (arr == null || arr.length == 0) {
+			return 0;
+		}
+
+		int max = 1;
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i = 0; i < arr.length; i++) {
+			if (!map.containsKey(arr[i])) {// 不包含arr[i]时，将其塞入map中，value为1
+				map.put(arr[i], 1);
+				if (map.containsKey(arr[i] - 1)) {// 判断arr[i]的前面的数字是否存在
+					max = Math.max(max, merge(map, arr[i] - 1, arr[i]));
+				}
+				if (map.containsKey(arr[i] + 1)) {// 判断arr[i]的后面的数字是否存在
+					max = Math.max(max, merge(map, arr[i], arr[i] + 1));
+				}
+			}
+		}
+
+		return max;
+	}
+
+	/**
+	 * 数组中的最长连续序列 P236 merge方法
+	 * 
+	 * @param map
+	 * @param less
+	 * @param more
+	 * @return
+	 */
+	private int merge(Map<Integer, Integer> map, int less, int more) {
+
+		int left = less - map.get(less) + 1;// map.get(less)很关键
+		int right = more + map.get(more) - 1;
+		int len = right - left + 1;
+		map.put(left, len);// leftA加入其中，刷新value值
+		map.put(right, len);// rightA加入其中，刷新value值
+		return len;
 	}
 
 	public int minCoins(int[] arr, int aim) {
@@ -245,7 +300,7 @@ public class ChapterFour {
 	}
 
 	/**
-	 * �������С·���� P187
+	 * 矩阵的最短路径和 P187
 	 * 
 	 * @param m
 	 * @return
@@ -260,11 +315,11 @@ public class ChapterFour {
 		int[][] dp = new int[row][col];
 		dp[0][0] = m[0][0];
 
-		for (int i = 1; i < row; i++) {
+		for (int i = 1; i < row; i++) {// 组装第一列数据
 			dp[i][0] = dp[i - 1][0] + m[i][0];
 		}
 
-		for (int j = 1; j < col; j++) {
+		for (int j = 1; j < col; j++) {// 组装第一 行数据
 			dp[0][j] = dp[0][j - 1] + m[0][j];
 		}
 		for (int i = 1; i < row; i++) {
@@ -277,7 +332,7 @@ public class ChapterFour {
 	}
 
 	/**
-	 * �������С·���� P187 �ռ�ѹ����ĵڶ��ֽⷨ
+	 * 矩阵的最短路径和 P187 空间压缩算法
 	 * 
 	 * @param m
 	 * @return
@@ -286,17 +341,17 @@ public class ChapterFour {
 		if (m == null || m.length == 0 || m[0] == null || m[0].length == 0) {
 			return 0;
 		}
-		int more = Math.max(m.length, m[0].length);// �����������ϴ���Ǹ�Ϊmore
-		int less = Math.min(m.length, m[0].length);// ������������С���Ǹ�Ϊless
-		boolean rowmore = (more == m.length);// m.length�����������ж������������Ƿ���ȣ���ȷ���true������ȷ���false
-		int[] arr = new int[less];// ��������ĳ��Ƚ�Ϊ�����������е���Сֵ
+		int more = Math.max(m.length, m[0].length);// 行数和列数较大的那个为more
+		int less = Math.min(m.length, m[0].length);// 行数和列数较小的那个为less
+		boolean rowmore = (more == m.length);// m.length 行数是不是大于等于列数
+		int[] arr = new int[less];// 辅助数组的长度仅为行数和列数的最小值
 		arr[0] = m[0][0];
-		// ע������������������ʱ��ѡȡ[j][i] [i][j]
-		for (int i = 1; i < less; i++) {// ������4��5�У�arr�����������ŵ�һ�У������ұ��ƽ�
-			arr[i] = arr[i - 1] + (rowmore ? m[0][i] : m[i][0]);// tureʱ�������ƽ���falseʱ�����ƽ�
+		//
+		for (int i = 1; i < less; i++) {
+			arr[i] = arr[i - 1] + (rowmore ? m[0][i] : m[i][0]);
 		}
 		for (int i = 1; i < more; i++) {
-			arr[0] = arr[0] + (rowmore ? m[i][0] : m[0][i]);// ������Ĳ�����һ��arrʱ�෴
+			arr[0] = arr[0] + (rowmore ? m[i][0] : m[0][i]);
 			for (int j = 1; j < less; j++) {
 				arr[j] = Math.min(arr[j - 1], arr[j])
 						+ (rowmore ? m[i][j] : m[j][i]);
