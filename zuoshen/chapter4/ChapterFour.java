@@ -1,5 +1,6 @@
 package zuoshen.chapter4;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,8 +35,61 @@ public class ChapterFour {
 		// int[] arr = { 5, 2, 3 };
 		// int aim = 20;
 
-		int[] arr = { 100, 4, 200, 1, 3, 2 };
-		cf.longestConsecutive(arr);
+		// int[] arr = { 100, 4, 200, 1, 3, 2 };
+		// cf.longestConsecutive(arr);
+
+		// String str = "A1234B";
+		// System.out.println(str.substring(1, 3));
+
+		int[] arr = { 2, 1, 5, 3, 6, 4, 8, 9, 7 };
+		int[] dp = cf.getdp1(arr);
+		cf.generateLIS(arr, dp);
+
+	}
+
+	/*
+	 * LIS 最长增长子序列 P202 dp[i]表示在以arr[i]这个数结尾的情况下，arr[0...i-1]中最大递增序列长度
+	 */
+	public int[] getdp1(int[] arr) {
+		int[] dp = new int[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			dp[i] = 1;
+			for (int j = 0; j < i; j++) {
+				if (arr[i] > arr[j]) {
+					dp[i] = Math.max(dp[j] + 1, dp[i]);
+				}
+			}
+		}
+
+		return dp;
+	}
+
+	/*
+	 * 
+	 */
+	public int[] generateLIS(int[] arr, int[] dp) {
+
+		int index = 0;
+		int len = Integer.MIN_VALUE;
+		for (int i = 0; i < dp.length; i++) {
+			if (len < dp[i]) {
+				len = dp[i];// 拿到dp数组中的最大值
+				index = i;// 拿到dp数组中最大值的下标
+			}
+		}
+
+		int[] res = new int[len];
+		res[--len] = arr[index];
+		for (int i = index; i >= 0; i--) {
+			if (arr[i] < arr[index] && dp[i] == dp[index] - 1) {// 判断条件，数本身要比arr[i]小，且dp的值刚好是减1的
+				res[--len] = arr[i];
+				index = i;// 拿到这个数后将index置为拿到的这个数的位置，重新进入for循环
+			}
+
+		}
+
+		System.out.println(Arrays.toString(res));
+		return res;
 
 	}
 
