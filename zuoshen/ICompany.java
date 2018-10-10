@@ -22,35 +22,31 @@ public class ICompany {
 		/************** 迷宫Start-回溯法 ****************/
 
 		int maxRow, maxLine, p;
-//		Scanner in = new Scanner(System.in);
-//		System.out.println("please input");
-//		Pattern pattern = Pattern.compile("[ ]+");
-//		String s = in.nextLine();
-//		String[] str = pattern.split(s);
-//		// 获取行
-//		maxRow = Integer.parseInt(str[0]);
-//		// 获取列
-//		maxLine = Integer.parseInt(str[1]);
+		// Scanner in = new Scanner(System.in);
+		// System.out.println("please input");
+		// Pattern pattern = Pattern.compile("[ ]+");
+		// String s = in.nextLine();
+		// String[] str = pattern.split(s);
+		// // 获取行
+		// maxRow = Integer.parseInt(str[0]);
+		// // 获取列
+		// maxLine = Integer.parseInt(str[1]);
 
-//		int[][] array = new int[maxRow][maxLine];
-//		for (int i = 0; i < maxRow; i++) {
-//			for (int j = 0; j < maxLine; j++) {
-//				array[i][j] = in.nextInt();
-//			}
-//		}
-		//该图是一个迷宫的图。1代表是墙不能走，0是可以走的路线。只能往上下左右走，直到从左上角到右下角出口。
-		int[][] array ={{0,0, 1, 0, 0, 0, 1, 0 },
-		{0,0, 1, 0, 0, 0, 1, 0 },
-		{0,0, 1, 0, 1, 1, 0, 1 },
-		{0,1, 1, 1, 0, 0, 1, 0 },
-		{0,0, 0, 1, 0, 0, 0, 0 },
-		{0,1, 0, 0, 0, 1, 0, 1 },
-		{0,1, 1, 1, 1, 0, 0, 1 },
-		{1,1, 0, 0, 0, 1, 0, 1 },
-		{1,1, 0, 0, 0, 0, 0, 0}};
+		// int[][] array = new int[maxRow][maxLine];
+		// for (int i = 0; i < maxRow; i++) {
+		// for (int j = 0; j < maxLine; j++) {
+		// array[i][j] = in.nextInt();
+		// }
+		// }
+		// 该图是一个迷宫的图。1代表是墙不能走，0是可以走的路线。只能往上下左右走，直到从左上角到右下角出口。
+		int[][] array = { { 0, 0, 1, 0, 0, 0, 1, 0 },
+				{ 0, 0, 1, 0, 0, 0, 1, 0 }, { 0, 0, 1, 0, 1, 1, 0, 1 },
+				{ 0, 1, 1, 1, 0, 0, 1, 0 }, { 0, 0, 0, 1, 0, 0, 0, 0 },
+				{ 0, 1, 0, 0, 0, 1, 0, 1 }, { 0, 1, 1, 1, 1, 0, 0, 1 },
+				{ 1, 1, 0, 0, 0, 1, 0, 1 }, { 1, 1, 0, 0, 0, 0, 0, 0 } };
 		maxRow = 9;
-		maxLine=8;
-		
+		maxLine = 8;
+
 		// for (int i = 0; i < maxRow; i++) {
 		// System.out.println("array:"+Arrays.toString(array[i]));
 		// }
@@ -91,8 +87,8 @@ public class ICompany {
 		return dp[row - 1][col - 1];
 	}
 
-	/**回溯法 迷宫 智慧芽 2018.10.10
-	 * 制定走的规则
+	/**
+	 * 回溯法 迷宫 智慧芽 2018.10.10 制定走的规则
 	 * 
 	 * @param i
 	 * @param j
@@ -135,6 +131,11 @@ public class ICompany {
 	}
 
 	/**
+	 * 
+	 * 一旦该路径走到了死胡同里，清理走过的路径将当前位置重新标志为1，推出当前递归的迭代堆栈，返回上一次，继续
+	 * 在当前函数里面的应用主要是清理之前走过的但是被标记为1的位置，将该位置重新置为0，以便下一次的位置可以访问
+	 *
+	 * 
 	 * 判断[i,j]-->[targetI,targetJ]是否可行
 	 * 
 	 * @param i
@@ -150,15 +151,15 @@ public class ICompany {
 			int[][] array, int maxRow, int maxLine) {
 		if (targetI < 0 || targetJ < 0 || targetI >= maxRow
 				|| targetJ >= maxLine) {
-//			System.out.println("到达最左边或最右边，失败了");
+			// System.out.println("到达最左边或最右边，失败了");
 			return false;
 		}
 		if (array[targetI][targetJ] == 1) {
-//			System.out.println("目标是墙，失败了");
+			// System.out.println("目标是墙，失败了");
 			return false;
 		}
 		if (array[targetI][targetJ] == 8) {
-//			System.out.println("来回走，失败了");
+			// System.out.println("来回走，失败了");
 			return false;
 		}
 		return true;
